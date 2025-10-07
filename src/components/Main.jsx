@@ -1,7 +1,14 @@
 export const Main = () => {
   return (
-    <>
-      <h1>This is the main body</h1>
-    </>
+    <main>
+      <form className="add-ingredient-form">
+        <input
+          aria-label="Add ingedient"
+          type="text"
+          placeholder="e.g. oregano"
+        />
+        <button>Add ingredient</button>
+      </form>
+    </main>
   );
 };

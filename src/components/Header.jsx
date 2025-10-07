@@ -1,7 +1,10 @@
+import chef from "../assets/chef.png";
+
 export const Header = () => {
   return (
-    <>
-      <h1>This is the header</h1>
-    </>
+    <header>
+      <img src={chef} />
+      <h1>Chef Claude</h1>
+    </header>
   );
 };
