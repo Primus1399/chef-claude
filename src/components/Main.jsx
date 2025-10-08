@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 
 export const Main = () => {
-  const ingredients = ["Chicken", "Oregano", "Tomatoes"];
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    setItem = formData.get("ingredient");
-    ingredients.push(setItem);
-    console.log(ingredients);
+    const newIngredient = formData.get("ingredient");
+    setIngredients((prevIngredients) => [...prevIngredients, newIngredient]);
   };
-  const [item, setItem] = useState("");
+  let [ingredients, setIngredients] = useState([
+    "Chicken",
+    "Oregano",
+    "Tomatoes",
+  ]);
   return (
     <main>
       <form className="add-ingredient-form" onSubmit={handleSubmit}>
@@ -18,7 +20,6 @@ export const Main = () => {
           type="text"
           placeholder="e.g. oregano"
           name="ingredient"
-          // value={ingredient}
         />
         <button>Add ingredient</button>
       </form>
