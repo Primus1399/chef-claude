@@ -1,26 +1,32 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { Recipe } from "./Recipe";
+import { IngredientsList } from "./IngredientsList";
+import { getRecipeFromChefClaude } from "../services/ai";
 
 export const Main = () => {
-  const addIngredient = (formData) => {
-    // e.preventDefault();
-    // const formData = new FormData(e.currentTarget);
+  const addIngredient = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
     const newIngredient = formData.get("ingredient");
     setIngredients((prevIngredients) => [...prevIngredients, newIngredient]);
+    e.currentTarget.reset();
   };
-  const [ingredients, setIngredients] = useState([
-    // "Chicken",
-    // "Oregano",
-    // "Tomatoes",
-  ]);
+
+  const [ingredients, setIngredients] = useState([]);
 
   const [recipeShown, setrecipeShown] = useState(false);
 
-  const showRecipeClick = () => {
+  const [recipe, setRecipe] = useState("");
+
+  const showRecipeClick = async () => {
     setrecipeShown((prevRecipeShown) => !prevRecipeShown);
+    const generatedRecipe = await getRecipeFromChefClaude(ingredients);
+    setRecipe(generatedRecipe);
   };
+
   return (
     <main>
-      <form className="add-ingredient-form" action={addIngredient}>
+      <form className="add-ingredient-form" onSubmit={addIngredient}>
         <input
           aria-label="Add ingredient"
           type="text"
@@ -30,99 +36,12 @@ export const Main = () => {
         />
         <button>Add ingredient</button>
       </form>
-      <section className="ingredients-section">
-        <h1>Ingredients on hand:</h1>
-        {ingredients.length < 1 ? (
-          <span>No ingredients added yet...</span>
-        ) : (
-          <>
-            <ul>
-              {ingredients.map((item, index) => {
-                return <li key={index}>{item}</li>;
-              })}
-            </ul>
-            {ingredients.length > 3 ? (
-              <div className="get-recipe-container">
-                <div>
-                  <h3>Ready for a recipe?</h3>
-                  <p>Generate a recipe from your list of ingredients.</p>
-                </div>
-                <button onClick={showRecipeClick}>Get a recipe</button>
-              </div>
-            ) : null}
-            {recipeShown && (
-              <section>
-                <h2>Chef Claude Recommends:</h2>
-                <article
-                  className="suggested-recipe-container"
-                  aria-live="polite"
-                >
-                  <p>
-                    Based on the ingredients you have available, I would
-                    recommend making a simple a delicious{" "}
-                    <strong>Beef Bolognese Pasta</strong>. Here is the recipe:
-                  </p>
-                  <h3>Beef Bolognese Pasta</h3>
-                  <strong>Ingredients:</strong>
-                  <ul>
-                    <li>1 lb. ground beef</li>
-                    <li>1 onion, diced</li>
-                    <li>3 cloves garlic, minced</li>
-                    <li>2 tablespoons tomato paste</li>
-                    <li>1 (28 oz) can crushed tomatoes</li>
-                    <li>1 cup beef broth</li>
-                    <li>1 teaspoon dried oregano</li>
-                    <li>1 teaspoon dried basil</li>
-                    <li>Salt and pepper to taste</li>
-                    <li>
-                      8 oz pasta of your choice (e.g., spaghetti, penne, or
-                      linguine)
-                    </li>
-                  </ul>
-                  <strong>Instructions:</strong>
-                  <ol>
-                    <li>
-                      Bring a large pot of salted water to a boil for the pasta.
-                    </li>
-                    <li>
-                      In a large skillet or Dutch oven, cook the ground beef
-                      over medium-high heat, breaking it up with a wooden spoon,
-                      until browned and cooked through, about 5-7 minutes.
-                    </li>
-                    <li>
-                      Add the diced onion and minced garlic to the skillet and
-                      cook for 2-3 minutes, until the onion is translucent.
-                    </li>
-                    <li>Stir in the tomato paste and cook for 1 minute.</li>
-                    <li>
-                      Add the crushed tomatoes, beef broth, oregano, and basil.
-                      Season with salt and pepper to taste.
-                    </li>
-                    <li>
-                      Reduce the heat to low and let the sauce simmer for 15-20
-                      minutes, stirring occasionally, to allow the flavors to
-                      meld.
-                    </li>
-                    <li>
-                      While the sauce is simmering, cook the pasta according to
-                      the package instructions. Drain the pasta and return it to
-                      the pot.
-                    </li>
-                    <li>
-                      Add the Bolognese sauce to the cooked pasta and toss to
-                      combine.
-                    </li>
-                    <li>
-                      Serve hot, garnished with additional fresh basil or grated
-                      Parmesan cheese if desired.
-                    </li>
-                  </ol>
-                </article>
-              </section>
-            )}
-          </>
-        )}
-      </section>
+      <IngredientsList
+        ingredients={ingredients}
+        recipeShown={recipeShown}
+        showRecipeClick={showRecipeClick}
+      />
+      {recipeShown && <Recipe recipe={recipe} />}
     </main>
   );
 };
