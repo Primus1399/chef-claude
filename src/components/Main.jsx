@@ -1,9 +1,23 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Recipe } from "./Recipe";
 import { IngredientsList } from "./IngredientsList";
 import { getRecipeFromChefClaude } from "../services/ai";
 
 export const Main = () => {
+  const [ingredients, setIngredients] = useState([]);
+
+  const [recipeShown, setrecipeShown] = useState(false);
+
+  const [recipe, setRecipe] = useState("");
+
+  const recipeSection = useRef(null);
+
+  useEffect(() => {
+    if (recipe) {
+      recipeSection.current.scrollIntoView();
+    }
+  }, [recipe]);
+
   const addIngredient = (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -11,12 +25,6 @@ export const Main = () => {
     setIngredients((prevIngredients) => [...prevIngredients, newIngredient]);
     e.currentTarget.reset();
   };
-
-  const [ingredients, setIngredients] = useState([]);
-
-  const [recipeShown, setrecipeShown] = useState(false);
-
-  const [recipe, setRecipe] = useState("");
 
   const showRecipeClick = async () => {
     setrecipeShown((prevRecipeShown) => !prevRecipeShown);
@@ -38,10 +46,10 @@ export const Main = () => {
       </form>
       <IngredientsList
         ingredients={ingredients}
-        recipeShown={recipeShown}
         showRecipeClick={showRecipeClick}
+        ref={recipeSection}
       />
-      {recipeShown && <Recipe recipe={recipe} />}
+      {recipeShown && <Recipe recipe={recipe} ref={recipeSection} />}
     </main>
   );
 };

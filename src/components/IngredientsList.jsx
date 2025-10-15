@@ -1,4 +1,4 @@
-export const IngredientsList = ({ ingredients, showRecipeClick }) => {
+export const IngredientsList = ({ ingredients, showRecipeClick, ref }) => {
   return (
     <section className="ingredients-section">
       <h1>Ingredients on hand:</h1>
